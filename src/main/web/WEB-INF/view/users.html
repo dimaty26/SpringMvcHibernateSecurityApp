@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title>Users List</title>
+
+    <link type="text/css"
+          rel="stylesheet"
+          href="/resources/css/style.css">
+</head>
+<body>
+<div id="wrapper">
+    <div id="header">
+        <h2>Users List</h2>
+    </div>
+</div>
+
+<div id="container">
+    <div id="content">
+
+        <input type="button" value="Add User"
+               onclick="window.location.href='show-form-for-add'; return false;"
+               class="add-button"/>
+
+        <div th:switch="${userList}">
+            <h2 th:case="null">No users yet!</h2>
+            <div th:case="*">
+                <h2>Users</h2>
+                <table>
+                    <thead>
+                    <tr>
+                        <th>First Name</th>
+                        <th>Last Name</th>
+                        <th>Email</th>
+                        <th>Action</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="user : ${userList}">
+                        <td th:text="${user.firstName}"></td>
+                        <td th:text="${user.lastName}"></td>
+                        <td th:text="${user.email}"></td>
+                        <td>
+                            <a th:href="@{/users/show-form-for-update/{id}(id=${user.id})}">Edit</a>
+                            |
+                            <a th:href="@{/users/delete/{id}(id=${user.id})}"
+                               onclick="if (!(confirm('Are you sure you want to delete this customer?'))) return false">
+                               Delete</a>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

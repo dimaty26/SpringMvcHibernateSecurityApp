@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title>User Form</title>
+
+    <link type="text/css"
+          rel="stylesheet"
+          href="/resources/css/style.css">
+
+    <link type="text/css"
+          rel="stylesheet"
+          href="/resources/css/add-customer-style.css">
+</head>
+<body>
+
+<div id="wrapper">
+    <div id="header">
+        <h2>User Relationship Manager</h2>
+    </div>
+</div>
+
+<div id="container">
+    <h3>Add/Update User</h3>
+
+    <form action="#" th:action="@{/save-user}" th:modelAttribute="user" th:object="${user}" method="post">
+
+        <input type="hidden" th:field="*{id}" value="${user.id}">
+
+        <label for="firstName">First Name: </label>
+        <input type="text" th:field="*{firstName}" id="firstName" placeholder="First Name">
+
+        <label for="lastName">Last Name: </label>
+        <input type="text" th:field="*{lastName}" id="lastName" placeholder="Last Name">
+
+        <label for="email">Email: </label>
+        <input type="text" th:field="*{email}" id="email" placeholder="Email">
+
+        <td><label></label></td>
+        <input type="submit" value="Save" class="save">
+    </form>
+
+    <div style="clear: both;"></div>
+
+    <p>
+        <a href="/users/list">Back to List</a>
+    </p>
+</div>
+
+</body>
+</html>
