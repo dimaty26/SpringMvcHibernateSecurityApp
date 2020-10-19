@@ -39,8 +39,8 @@ public class UserController {
         return "user-form";
     }
 
-    @PostMapping("/save-user")
-    public String saveUser(@ModelAttribute("user") User user, Model model) {
+    @PostMapping("/saveUser")
+    public String saveUser(@ModelAttribute("user") User user) {
 
         userService.saveUser(user);
 

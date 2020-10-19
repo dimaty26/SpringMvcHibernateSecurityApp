@@ -8,6 +8,7 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.env.Environment;
+import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.jdbc.datasource.DriverManagerDataSource;
 import org.springframework.orm.jpa.JpaTransactionManager;
 import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
@@ -27,6 +28,7 @@ import java.util.Properties;
 @EnableTransactionManagement
 @ComponentScan("com.zmeevsky.springmvc")
 @PropertySource("classpath:application.properties")
+@EnableJpaRepositories(basePackages = "com.zmeevsky.springmvc.repository")
 public class DataConfig implements WebMvcConfigurer {
 
     private static final String PROP_DATABASE_DRIVER = "db.driver";

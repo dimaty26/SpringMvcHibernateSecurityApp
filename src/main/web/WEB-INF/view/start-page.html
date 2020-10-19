@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:th="http://www.thymeleaf.org"
+      layout:decorate="~{layout-template}"
+      xmlns:sec="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title>Hello</title>
+</head>
+<body>
+<div layout:fragment="content" th:remove="tag">
+    <h3>Spring MVC Hibernate Security Application</h3>
+
+    <hr>
+
+    <div>
+        User:
+        <div sec:authentication="name"></div>
+        <br><br>
+        Role(s):
+        <div sec:authentication="principal.authorities"></div>
+    </div>
+
+    <hr>
+
+    <a href="/users/list">Get All Users</a>
+
+    <hr>
+</div>
+</body>
+</html>
