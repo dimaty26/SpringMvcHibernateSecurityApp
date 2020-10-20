@@ -47,8 +47,8 @@ public class UserController {
         return "redirect:/users/list";
     }
 
-    @GetMapping("/show-form-for-update/{id}")
-    public String updateUser(@PathVariable("id") int id, Model model) {
+    @GetMapping("/show-form-for-update")
+    public String showFormForUpdate(@RequestParam("userId") int id, Model model) {
 
         User user = userService.getUser(id);
 

@@ -15,7 +15,7 @@
 
     <div>
         User:
-        <div sec:authentication="name"></div>
+        <div sec:authentication="principal.username"></div>
         <br><br>
         Role(s):
         <div sec:authentication="principal.authorities"></div>
