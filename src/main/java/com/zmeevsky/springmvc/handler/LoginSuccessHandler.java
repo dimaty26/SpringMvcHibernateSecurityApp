@@ -50,8 +50,8 @@ public class LoginSuccessHandler implements AuthenticationSuccessHandler {
     private String determineTargetUrl(final Authentication authentication) {
 
         Map<String, String> roleTargetUrlMap = new HashMap<>();
-        roleTargetUrlMap.put("ROLE_USER", "/user");
-        roleTargetUrlMap.put("ROLE_ADMIN", "/admin");
+        roleTargetUrlMap.put("ROLE_USER", "/users/user");
+        roleTargetUrlMap.put("ROLE_ADMIN", "/users/admin");
 
         final Collection<? extends GrantedAuthority> authorities = authentication.getAuthorities();
         for (final GrantedAuthority grantedAuthority : authorities) {

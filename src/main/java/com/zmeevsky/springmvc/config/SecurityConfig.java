@@ -1,12 +1,15 @@
 package com.zmeevsky.springmvc.config;
 
 import com.zmeevsky.springmvc.handler.LoginSuccessHandler;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
@@ -16,30 +19,28 @@ import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 @EnableWebSecurity
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
+    @Autowired
+    private UserDetailsService userDetailsService;
+
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-        auth.inMemoryAuthentication()
-                .withUser("john")
-                .password(passwordEncoder().encode("test123"))
-                .roles("EMPLOYEE");
-        auth.inMemoryAuthentication()
-                .withUser("mary")
-                .password(passwordEncoder().encode("test123"))
-                .roles("MANAGER");
-        auth.inMemoryAuthentication()
-                .withUser("susan")
-                .password(passwordEncoder().encode("test123"))
-                .roles("ADMIN");
+        auth.userDetailsService(userDetailsService).passwordEncoder(passwordEncoder());
     }
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http.authorizeRequests()
-                .anyRequest().authenticated()
+                .antMatchers("/", "/show-login-page").permitAll()
+                .and()
+                .authorizeRequests()
+                .antMatchers("/users/user").access("hasAnyRole('ROLE_USER', 'ROLE_ADMIN')")
+                .and()
+                .authorizeRequests()
+                .antMatchers("/users/admin").access("hasRole('ROLE_ADMIN')")
                 .and()
                 .formLogin()
                     .loginPage("/show-login-page")
-                    //.successHandler(myAuthenticationSuccessHandler())
+                    .successHandler(myAuthenticationSuccessHandler())
                     .permitAll()
                 .and()
                 .logout()
@@ -48,6 +49,13 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                     .logoutRequestMatcher(new AntPathRequestMatcher("/logout"))
                     .logoutSuccessUrl("/show-login-page?logout")
                 .permitAll();
+    }
+
+    @Override
+    public void configure(WebSecurity web) throws Exception {
+        web
+                .ignoring()
+                .antMatchers("/resources/**", "/js/**", "/css/**", "/fonts/**");
     }
 
     @Bean

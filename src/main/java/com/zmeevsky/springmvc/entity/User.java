@@ -25,24 +25,28 @@ public class User implements UserDetails {
 	@Column(name="email")
 	private String email;
 
-//	@Column(name = "password")
-//	private String password;
+	@Column(name = "password")
+	private String password;
 
-//	@ElementCollection(targetClass = Role.class, fetch = FetchType.EAGER)
-//	@CollectionTable(name = "users_role", joinColumns = @JoinColumn(name = "users_id"))
-//	@Enumerated(EnumType.STRING)
-//	private Set<Role> roles;
+	@ManyToMany(fetch = FetchType.EAGER)
+	@JoinTable(name = "users_roles", joinColumns = @JoinColumn(name = "user_id"),
+			inverseJoinColumns = @JoinColumn(name = "role_id"))
+	private Set<Role> roles;
 	
 	public User() {
 	}
 
-//	public Set<Role> getRoles() {
-//		return roles;
-//	}
-//
-//	public void setRoles(Set<Role> roles) {
-//		this.roles = roles;
-//	}
+	public void setPassword(String password) {
+		this.password = password;
+	}
+
+	public Set<Role> getRoles() {
+		return roles;
+	}
+
+	public void setRoles(Set<Role> roles) {
+		this.roles = roles;
+	}
 
 	public int getId() {
 		return id;
@@ -83,17 +87,17 @@ public class User implements UserDetails {
 
 	@Override
 	public Collection<? extends GrantedAuthority> getAuthorities() {
-		return null;
+		return getRoles();
 	}
 
 	@Override
 	public String getPassword() {
-		return /*password*/ null;
+		return password;
 	}
 
 	@Override
 	public String getUsername() {
-		return firstName;
+		return email;
 	}
 
 	@Override

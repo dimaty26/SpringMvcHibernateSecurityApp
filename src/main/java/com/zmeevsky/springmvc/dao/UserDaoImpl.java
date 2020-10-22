@@ -1,19 +1,37 @@
 package com.zmeevsky.springmvc.dao;
 
+import com.zmeevsky.springmvc.entity.Role;
 import com.zmeevsky.springmvc.entity.User;
 import org.hibernate.Session;
 import org.hibernate.query.Query;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
+import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
+import javax.persistence.TypedQuery;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Root;
+import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Repository
 public class UserDaoImpl implements UserDao {
 
     @PersistenceContext
     private EntityManager entityManager;
+
+    @Autowired
+    private RoleDao roleDao;
+
+    @Autowired
+    private PasswordEncoder bCryptPasswordEncoder;
 
     @Override
     public List<User> getUsers() {
@@ -23,7 +41,28 @@ public class UserDaoImpl implements UserDao {
     @Override
     public void saveUser(User user) {
         Session session = entityManager.unwrap(Session.class);
+
+        user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
+        Set<Role> roles = new HashSet<>();
+        roles.add(roleDao.getOne(1));
+        user.setRoles(roles);
         session.saveOrUpdate(user);
+    }
+
+    @Override
+    public User findByUsername(String username) {
+
+        CriteriaBuilder cb = entityManager.getCriteriaBuilder();
+        CriteriaQuery<User> cr = cb.createQuery(User.class);
+        Root<User> root = cr.from(User.class);
+        cr.select(root).where(cb.like(root.get("email"), "%" + username + "%"));
+
+        TypedQuery<User> query = entityManager.createQuery(cr);
+        try {
+            return query.getSingleResult();
+        } catch (NoResultException e) {
+            return null;
+        }
     }
 
     @Override

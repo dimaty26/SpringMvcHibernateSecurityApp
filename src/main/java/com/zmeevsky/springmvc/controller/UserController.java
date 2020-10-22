@@ -7,6 +7,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import java.security.Principal;
 import java.util.List;
 
 @Controller
@@ -28,6 +29,32 @@ public class UserController {
         model.addAttribute("userList", users);
 
         return "users";
+    }
+
+    @GetMapping("/user")
+    public String getUserPage(Principal principal, Model model) {
+
+        String userName = principal.getName();
+
+        User user = userService.findByUsername(userName);
+
+        model.addAttribute("user", user);
+
+        return "user-page";
+    }
+
+    @GetMapping("/admin")
+    public String getAdminPage(Principal principal, Model model) {
+
+        String userName = principal.getName();
+
+        User user = userService.findByUsername(userName);
+        List<User> users = userService.getUsers();
+
+        model.addAttribute("userList", users);
+        model.addAttribute("user", user);
+
+        return "admin-page";
     }
 
     @GetMapping("/show-form-for-add")
