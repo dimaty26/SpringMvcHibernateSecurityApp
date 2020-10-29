@@ -14,6 +14,7 @@ import org.springframework.orm.jpa.JpaTransactionManager;
 import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
+import org.springframework.web.servlet.config.annotation.ViewControllerRegistry;
 import org.springframework.web.servlet.config.annotation.ViewResolverRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import org.thymeleaf.spring5.SpringTemplateEngine;
@@ -28,7 +29,6 @@ import java.util.Properties;
 @EnableTransactionManagement
 @ComponentScan("com.zmeevsky.springmvc")
 @PropertySource("classpath:application.properties")
-@EnableJpaRepositories(basePackages = "com.zmeevsky.springmvc.repository")
 public class DataConfig implements WebMvcConfigurer {
 
     private static final String PROP_DATABASE_DRIVER = "db.driver";
@@ -49,6 +49,11 @@ public class DataConfig implements WebMvcConfigurer {
         this.applicationContext = applicationContext;
     }
 
+    @Override
+    public void addViewControllers(ViewControllerRegistry registry) {
+        registry.addViewController("/show-login-page").setViewName("plain-login");
+        registry.addViewController("/").setViewName("start-page");
+    }
 
     @Bean
     public SpringResourceTemplateResolver templateResolver() {

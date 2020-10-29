@@ -5,22 +5,25 @@
 <body>
 <header th:replace="common-parts :: common-header"></header>
 
-<div>
+<div class="col-lg-12 text-center">
     Welcome: <span th:utext="${#request.userPrincipal.name}"></span>
+
+    <br>
 
     This is your Username:
     <div sec:authorize="isAuthenticated()">
-        <span sec:authentication="username"></span>
+        <span sec:authentication="${user.firstName}"></span>
     </div>
-    <br><br>
+    <br>
     This is your Role(s):
     <div sec:authorize="isAuthenticated()">
-        <span sec:authentication="roles"></span>
+        <span sec:authentication="principal.authorities"></span>
     </div>
+    <br><br>
 </div>
 
-<div>
-    <table class="table table-striped">
+<div class="col-lg-12 text-center">
+    <table class="table table-striped" style="margin-left:150px; width: 1200px;">
         <thead>
         <tr>
             <th>First Name</th>

@@ -53,7 +53,9 @@
                     <a class="nav-link" href="/users/user">User</a>
                 </li>
                 <li class="nav-item">
-                    <a sec:authorize="hasRole('ROLE_ADMIN')" class="nav-link" href="/users/admin">Admin</a>
+                    <div sec:authorize="hasRole('ROLE_ADMIN')">
+                    <a class="nav-link" href="/users/admin">Admin</a>
+                    </div>
                 </li>
                 <li class="nav-item" sec:authorize="!isAnonymous()">
                     <a class="nav-link" th:href="@{/logout}">Log out</a>

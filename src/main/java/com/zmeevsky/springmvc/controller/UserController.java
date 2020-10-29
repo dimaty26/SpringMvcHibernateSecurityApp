@@ -34,6 +34,12 @@ public class UserController {
     @GetMapping("/user")
     public String getUserPage(Principal principal, Model model) {
 
+//        User user = null;
+//
+//        if (principal instanceof User) {
+//            user = (User) principal;
+//        }
+
         String userName = principal.getName();
 
         User user = userService.findByUsername(userName);
@@ -60,8 +66,7 @@ public class UserController {
     @GetMapping("/show-form-for-add")
     public String showFormForAdd(Model model) {
 
-        User user = new User();
-        model.addAttribute("user", user);
+        model.addAttribute("user", new User());
 
         return "user-form";
     }
@@ -71,7 +76,7 @@ public class UserController {
 
         userService.saveUser(user);
 
-        return "redirect:/users/list";
+        return "redirect:/users/admin";
     }
 
     @GetMapping("/show-form-for-update")
@@ -81,7 +86,15 @@ public class UserController {
 
         model.addAttribute("user", user);
 
-        return "user-form";
+        return "update-form";
+    }
+
+    @PostMapping("/update-user")
+    public String updateUser(@ModelAttribute("user") User user) {
+
+        userService.updateUser(user);
+
+        return "redirect:/users/admin";
     }
 
     @GetMapping("/delete/{id}")
@@ -89,7 +102,7 @@ public class UserController {
 
         userService.deleteUser(id);
 
-        return "redirect:/users/list";
+        return "redirect:/users/admin";
     }
 
     @GetMapping("/search")
