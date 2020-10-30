@@ -1,4 +1,4 @@
-package com.zmeevsky.springmvc.service;
+package com.zmeevsky.springmvc.security;
 
 import com.zmeevsky.springmvc.dao.UserDao;
 import com.zmeevsky.springmvc.entity.Role;
@@ -15,7 +15,6 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.HashSet;
 import java.util.Set;
 
-// move to security package
 @Service
 public class UserDetailsServiceImpl implements UserDetailsService {
 

@@ -11,9 +11,8 @@ import org.springframework.stereotype.Repository;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
-import java.util.HashSet;
+import java.util.Collections;
 import java.util.List;
-import java.util.Set;
 
 @Repository
 public class UserDaoImpl implements UserDao {
@@ -36,10 +35,7 @@ public class UserDaoImpl implements UserDao {
     public void saveUser(User user) {
 
         user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
-        Set<Role> roles = new HashSet<>();
-        roles.add(roleDao.getOne(1));
-        user.setRoles(roles);
-        entityManager.persist(user);
+        entityManager.merge(user);
     }
 
     @Override
@@ -49,8 +45,7 @@ public class UserDaoImpl implements UserDao {
         updatedUser.setLastName(user.getLastName());
         updatedUser.setEmail(user.getEmail());
         updatedUser.setPassword(user.getPassword());
-        updatedUser.setRoles(user.getRoles());
-        entityManager.flush();
+        entityManager.merge(updatedUser);
     }
 
     @Override

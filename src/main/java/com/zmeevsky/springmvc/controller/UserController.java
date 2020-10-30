@@ -1,24 +1,34 @@
 package com.zmeevsky.springmvc.controller;
 
+import com.zmeevsky.springmvc.dao.RoleDao;
+import com.zmeevsky.springmvc.entity.Role;
 import com.zmeevsky.springmvc.entity.User;
 import com.zmeevsky.springmvc.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.security.Principal;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @Controller
 @RequestMapping("/users")
 public class UserController {
 
     private final UserService userService;
+    private final RoleDao roleDao;
 
     @Autowired
-    public UserController(UserService userService) {
+    public UserController(UserService userService, RoleDao roleDao) {
         this.userService = userService;
+        this.roleDao = roleDao;
     }
 
     @GetMapping("/list")
@@ -34,11 +44,18 @@ public class UserController {
     @GetMapping("/user")
     public String getUserPage(Principal principal, Model model) {
 
-//        User user = null;
-//
-//        if (principal instanceof User) {
-//            user = (User) principal;
-//        }
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+        Set<String> roles = authentication.getAuthorities().stream()
+                .map(GrantedAuthority::getAuthority).collect(Collectors.toSet());
+
+        StringBuilder sb = new StringBuilder();
+        for (String role : roles) {
+            sb.append(role).append(" ");
+        }
+
+        model.addAttribute("username", principal.getName());
+        model.addAttribute("roleSet", new String(sb));
 
         String userName = principal.getName();
 
@@ -52,13 +69,21 @@ public class UserController {
     @GetMapping("/admin")
     public String getAdminPage(Principal principal, Model model) {
 
-        String userName = principal.getName();
-
-        User user = userService.findByUsername(userName);
         List<User> users = userService.getUsers();
 
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+        Set<String> roles = authentication.getAuthorities().stream()
+                .map(GrantedAuthority::getAuthority).collect(Collectors.toSet());
+
+        StringBuilder sb = new StringBuilder();
+        for (String role : roles) {
+            sb.append(role).append(" ");
+        }
+
         model.addAttribute("userList", users);
-        model.addAttribute("user", user);
+        model.addAttribute("username", principal.getName());
+        model.addAttribute("roleSet", new String(sb));
 
         return "admin-page";
     }
@@ -67,14 +92,23 @@ public class UserController {
     public String showFormForAdd(Model model) {
 
         model.addAttribute("user", new User());
+        model.addAttribute("roles", roleDao.getAll());
 
         return "user-form";
     }
 
     @PostMapping("/saveUser")
-    public String saveUser(@ModelAttribute("user") User user) {
+    public String saveUser(@RequestParam("firstName") String firstName,
+                           @RequestParam("lastName") String lastName,
+                           @RequestParam("email") String email,
+                           @RequestParam("password") String password,
+                           @RequestParam("roles") String[] roleIds) {
 
-        userService.saveUser(user);
+        Set<Role> roleSet = new HashSet<>();
+        for (String roleId : roleIds) {
+            roleSet.add(roleDao.getOne(Integer.parseInt(roleId)));
+        }
+        userService.saveUser(new User(firstName, lastName, email, password, roleSet));
 
         return "redirect:/users/admin";
     }
@@ -82,9 +116,8 @@ public class UserController {
     @GetMapping("/show-form-for-update")
     public String showFormForUpdate(@RequestParam("userId") int id, Model model) {
 
-        User user = userService.getUser(id);
-
-        model.addAttribute("user", user);
+        model.addAttribute("user", userService.getUser(id));
+        model.addAttribute("roles", roleDao.getAll());
 
         return "update-form";
     }

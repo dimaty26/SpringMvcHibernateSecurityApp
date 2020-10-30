@@ -11,14 +11,10 @@
     <br>
 
     This is your Username:
-    <div sec:authorize="isAuthenticated()">
-        <span sec:authentication="${user.firstName}"></span>
-    </div>
+    <span th:utext="${username}"></span>
     <br>
     This is your Role(s):
-    <div sec:authorize="isAuthenticated()">
-        <span sec:authentication="principal.authorities"></span>
-    </div>
+    <span th:text="${roleSet}"></span>
     <br><br>
 </div>
 

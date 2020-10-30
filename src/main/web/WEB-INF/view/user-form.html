@@ -15,39 +15,59 @@
 <body>
 <header th:replace="common-parts :: common-header"></header>
 
-<div id="wrapper">
+<div id="wrapper" class="col-lg-12 text-center">
     <div id="header">
         <h2>User Relationship Manager</h2>
     </div>
 </div>
 
 <div id="container">
-    <h3>Add User</h3>
+    <h3 style="margin-left:400px;" >Add User</h3>
 
-    <form action="#" th:action="@{/users/saveUser}" th:object="${user}" method="post">
+    <form action="#" th:action="@{/users/saveUser}" th:object="${user}"
+          method="post" style="width: 720px; margin-left:400px;">
 
         <input type="hidden" th:field="*{id}" value="${user.id}"/>
 
-        <label for="firstName"></label>
-        <input type="text" th:field="*{firstName}" id="firstName" placeholder="First Name"/>
+        <div class="form-group">
+            <label for="firstName">First Name</label>
+            <input class="form-control" type="text" th:field="*{firstName}" id="firstName" placeholder="First Name"/>
+        </div>
 
-        <label for="lastName"></label>
-        <input type="text" th:field="*{lastName}" id="lastName" placeholder="Last Name"/>
+        <div class="form-group">
+            <label for="lastName">Last Name</label>
+            <input class="form-control" type="text" th:field="*{lastName}" id="lastName" placeholder="Last Name"/>
+        </div>
 
-        <label for="email"></label>
-        <input type="text" th:field="*{email}" id="email" placeholder="Email"/>
+        <div class="form-group">
+            <label for="email">Email</label>
+            <input class="form-control" type="text" th:field="*{email}" id="email" placeholder="Email"/>
+        </div>
 
-        <label for="password"></label>
-        <input type="text" th:field="*{password}" id="password" placeholder="Password"/>
+        <div class="form-group">
+            <label for="password">Password</label>
+            <input class="form-control" type="text" th:field="*{password}" id="password" placeholder="Password"/>
+        </div>
+
+        <div class="form-group">
+            <label>Roles:
+                <input type="checkbox" name="roles"
+                       th:each="role : ${roles}"
+                       th:text="${role.name}"
+                       th:value="${role.id}"
+                       th:field="*{roles}"
+                />
+            </label>
+        </div>
 
         <td><label></label></td>
-        <input type="submit" value="Save" class="save"/>
+        <input type="submit" value="Save" class="btn btn-primary"/>
     </form>
 
     <div style="clear: both;"></div>
 
     <p>
-        <a href="/users/list">Back to List</a>
+        <a style="margin-left:400px;" href="/users/admin">Back to List</a>
     </p>
 </div>
 
